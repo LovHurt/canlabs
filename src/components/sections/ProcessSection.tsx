@@ -145,7 +145,7 @@ export default function ProcessSection() {
           className="mt-14 flex justify-center"
         >
           <a href="#iletisim" className="btn-primary group">
-            Süreci Başlat — Ücretsiz Görüşme Al
+            Süreci Başlat: Ücretsiz Görüşme Al
             <span className="group-hover:translate-x-1 transition-transform duration-200 inline-block">→</span>
           </a>
         </motion.div>

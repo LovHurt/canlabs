@@ -4,6 +4,7 @@ import HorizontalReel from "@/components/sections/HorizontalReel";
 import ShowcaseSection from "@/components/sections/ShowcaseSection";
 import ServicesSection from "@/components/sections/ServicesSection";
 import StatsSection from "@/components/sections/StatsSection";
+import CinematicSection from "@/components/sections/CinematicSection";
 import ProcessSection from "@/components/sections/ProcessSection";
 import CapabilitiesSection from "@/components/sections/CapabilitiesSection";
 import WhyCanLabsSection from "@/components/sections/WhyCanLabsSection";
@@ -19,6 +20,7 @@ export default function HomePage() {
       <ShowcaseSection />
       <ServicesSection />
       <StatsSection />
+      <CinematicSection />
       <ProcessSection />
       <CapabilitiesSection />
       <WhyCanLabsSection />

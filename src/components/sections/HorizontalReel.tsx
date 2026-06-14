@@ -69,7 +69,7 @@ function WebSlide() {
     <div className="flex flex-col items-center justify-center h-full gap-8 px-8">
       <div className="text-center mb-2">
         <span className="text-xs font-bold tracking-widest uppercase text-blue-400">
-          01 — Web Geliştirme
+          Web Geliştirme
         </span>
         <h2 className="text-4xl sm:text-5xl font-black text-white mt-2">
           Hız & Mükemmellik
@@ -161,7 +161,7 @@ const AI_LINES = [
   "> LLM modeli başlatılıyor (GPT-4o)...",
   "> Prompt optimizasyonu uygulandı ✓",
   "> Öngörü modeli çalışıyor...",
-  "> Doğruluk: %94.7 — threshold aşıldı ✓",
+  "> Doğruluk: %94.7, threshold aşıldı ✓",
   "> Rapor oluşturuluyor...",
   "> Tamamlandı. 3.2 saniye.",
 ];
@@ -211,7 +211,7 @@ function AISlide() {
     <div className="flex flex-col items-center justify-center h-full gap-6 px-8">
       <div className="text-center">
         <span className="text-xs font-bold tracking-widest uppercase text-violet-400">
-          02 — Yapay Zeka
+          Yapay Zeka
         </span>
         <h2 className="text-4xl sm:text-5xl font-black text-white mt-2">
           Akıllı Sistemler
@@ -272,7 +272,7 @@ function AISlide() {
             <div className="w-2.5 h-2.5 rounded-full bg-red-500/70" />
             <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/70" />
             <div className="w-2.5 h-2.5 rounded-full bg-green-500/70" />
-            <span className="ml-2 text-slate-500 text-xs">canlabs-ai — terminal</span>
+            <span className="ml-2 text-slate-500 text-xs">canlabs-ai / terminal</span>
           </div>
           <div className="p-4 space-y-1.5">
             <AnimatePresence>
@@ -323,7 +323,7 @@ function MobileSlide() {
     <div className="flex flex-col items-center justify-center h-full gap-6 px-8">
       <div className="text-center">
         <span className="text-xs font-bold tracking-widest uppercase text-emerald-400">
-          03 — Mobil Uygulama
+          Mobil Uygulama
         </span>
         <h2 className="text-4xl sm:text-5xl font-black text-white mt-2">
           iOS & Android
@@ -439,7 +439,7 @@ function DataSlide() {
     <div className="flex flex-col items-center justify-center h-full gap-6 px-8">
       <div className="text-center">
         <span className="text-xs font-bold tracking-widest uppercase text-orange-400">
-          04 — Veri Analitiği
+          Veri Analitiği
         </span>
         <h2 className="text-4xl sm:text-5xl font-black text-white mt-2">
           Gerçek Zamanlı İçgörü
@@ -451,7 +451,7 @@ function DataSlide() {
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800">
           <div>
             <div className="text-white font-bold">Analytics Dashboard</div>
-            <div className="text-slate-500 text-xs">Son 12 ay — canlı veri</div>
+            <div className="text-slate-500 text-xs">Son 12 ay / canlı veri</div>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
@@ -555,7 +555,7 @@ export default function HorizontalReel() {
       ref={containerRef}
       className="relative"
       style={{ height: "500vh" }}
-      aria-label="Hizmetlerimiz — yatay kayar bölüm"
+      aria-label="Hizmetlerimiz, yatay kayar bolum"
     >
       {/* Sticky viewport */}
       <div className="sticky top-0 h-screen overflow-hidden">
@@ -603,20 +603,6 @@ export default function HorizontalReel() {
           ))}
         </div>
 
-        {/* Scroll hint — fades after first scroll */}
-        <motion.div
-          style={{ opacity: useTransform(scrollYProgress, [0, 0.05], [1, 0]) }}
-          className="absolute bottom-8 right-8 flex flex-col items-center gap-2 text-white/50 z-20"
-        >
-          <span className="text-xs font-medium tracking-wider uppercase">Kaydır</span>
-          <motion.div
-            animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 1.2, repeat: Infinity }}
-            className="w-5 h-8 rounded-full border border-white/30 flex items-start justify-center pt-1.5"
-          >
-            <div className="w-1 h-2 rounded-full bg-white/60" />
-          </motion.div>
-        </motion.div>
       </div>
     </section>
   );
