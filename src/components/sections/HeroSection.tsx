@@ -97,42 +97,53 @@ export default function HeroSection() {
       className="relative min-h-screen flex items-center overflow-hidden bg-slate-50"
       onMouseMove={handleMouseMove}
     >
-      {/* ── Animated gradient orbs ── */}
+      {/* ── Aurora gradient orbs ── */}
       {!prefersReduced && (
         <>
-          {/* Orb 1 — large blue, top-right */}
+          {/* Aurora 1 — massive blue, top-right */}
           <motion.div
             style={{ x: orb1X, y: orb1Y }}
-            className="pointer-events-none absolute -top-40 -right-32 w-[700px] h-[700px]"
+            className="pointer-events-none absolute -top-60 -right-40 w-[900px] h-[900px]"
           >
             <motion.div
-              className="w-full h-full rounded-full bg-blue-400/25 blur-[100px]"
-              animate={{ scale: [1, 1.06, 0.97, 1], opacity: [0.7, 0.9, 0.7] }}
+              className="w-full h-full rounded-full bg-blue-500/30 blur-[130px]"
+              animate={{ scale: [1, 1.08, 0.95, 1], opacity: [0.6, 1, 0.6] }}
               transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
             />
           </motion.div>
 
-          {/* Orb 2 — sky, bottom-left */}
+          {/* Aurora 2 — cyan, bottom-left */}
           <motion.div
             style={{ x: orb2X, y: orb2Y }}
-            className="pointer-events-none absolute -bottom-40 -left-20 w-[550px] h-[550px]"
+            className="pointer-events-none absolute -bottom-52 -left-32 w-[750px] h-[750px]"
           >
             <motion.div
-              className="w-full h-full rounded-full bg-sky-300/20 blur-[80px]"
-              animate={{ scale: [1, 1.1, 0.93, 1], opacity: [0.5, 0.75, 0.5] }}
+              className="w-full h-full rounded-full bg-sky-400/25 blur-[110px]"
+              animate={{ scale: [1, 1.12, 0.9, 1], opacity: [0.4, 0.8, 0.4] }}
               transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
             />
           </motion.div>
 
-          {/* Orb 3 — indigo, mid-right */}
+          {/* Aurora 3 — violet, mid-left */}
           <motion.div
             style={{ x: orb3X, y: orb3Y }}
-            className="pointer-events-none absolute top-[35%] right-[18%] w-[320px] h-[320px]"
+            className="pointer-events-none absolute top-[20%] -left-20 w-[500px] h-[500px]"
           >
             <motion.div
-              className="w-full h-full rounded-full bg-indigo-400/15 blur-[60px]"
-              animate={{ scale: [1, 1.15, 1], opacity: [0.4, 0.6, 0.4] }}
-              transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 4 }}
+              className="w-full h-full rounded-full bg-violet-400/20 blur-[90px]"
+              animate={{ scale: [1, 1.18, 1], opacity: [0.3, 0.65, 0.3] }}
+              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+            />
+          </motion.div>
+
+          {/* Aurora 4 — indigo, top-center */}
+          <motion.div
+            className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px]"
+          >
+            <motion.div
+              className="w-full h-full rounded-full bg-indigo-400/15 blur-[100px]"
+              animate={{ scale: [1, 1.1, 1], opacity: [0.2, 0.5, 0.2] }}
+              transition={{ duration: 11, repeat: Infinity, ease: "easeInOut", delay: 5 }}
             />
           </motion.div>
         </>

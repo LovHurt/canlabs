@@ -1,6 +1,7 @@
 import HeroSection from "@/components/sections/HeroSection";
 import MarqueeSection from "@/components/sections/MarqueeSection";
 import HorizontalReel from "@/components/sections/HorizontalReel";
+import MediaGrid from "@/components/sections/MediaGrid";
 import ShowcaseSection from "@/components/sections/ShowcaseSection";
 import ServicesSection from "@/components/sections/ServicesSection";
 import StatsSection from "@/components/sections/StatsSection";
@@ -17,6 +18,7 @@ export default function HomePage() {
       <HeroSection />
       <MarqueeSection />
       <HorizontalReel />
+      <MediaGrid />
       <ShowcaseSection />
       <ServicesSection />
       <StatsSection />
