@@ -3,25 +3,93 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #f8fafc;
+  --bg-subtle: #f1f5f9;
+  --card: rgba(255, 255, 255, 0.97);
+  --card-border: rgba(15, 23, 54, 0.08);
+  --ink: #0f172a;
+  --muted: #64748b;
+  --primary: #1e40af;
+  --primary-light: #3b82f6;
+  --primary-dark: #1e3a8a;
+  --accent: #0ea5e9;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom cursor — desktop only */
+@media (pointer: fine) {
+  * {
+    cursor: none !important;
   }
 }
 
+/* Floating particle animation for StatsSection */
+@keyframes floatParticle {
+  0%, 100% { transform: translateY(0px) translateX(0px); }
+  33%       { transform: translateY(-12px) translateX(6px); }
+  66%       { transform: translateY(8px) translateX(-4px); }
+}
+
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  font-family: var(--font-jakarta), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  .section-padding {
+    @apply px-4 sm:px-6 lg:px-8 py-20 lg:py-28;
+  }
+
+  .container-tight {
+    @apply max-w-6xl mx-auto;
+  }
+
+  .eyebrow {
+    @apply text-xs font-semibold tracking-widest uppercase text-primary;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center gap-2 bg-primary text-white font-semibold px-6 py-3 rounded-xl
+    shadow-btn hover:shadow-btn-hover hover:bg-primary-dark
+    transition-all duration-200 ease-out
+    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 bg-white text-ink font-semibold px-6 py-3 rounded-xl
+    border border-card-border shadow-card
+    hover:border-primary/20 hover:shadow-card-hover
+    transition-all duration-200 ease-out
+    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 text-primary font-semibold px-4 py-2 rounded-lg
+    hover:bg-primary/5
+    transition-all duration-200 ease-out
+    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2;
+  }
+
+  .card-base {
+    @apply bg-card rounded-2xl border border-card-border shadow-card;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3 rounded-xl border border-card-border bg-white
+    text-ink placeholder-muted text-sm
+    focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/40
+    transition-all duration-150;
   }
 }
