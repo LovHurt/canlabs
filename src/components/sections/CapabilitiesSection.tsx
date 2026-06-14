@@ -1,139 +1,152 @@
 "use client";
 
-import { motion, useInView, useReducedMotion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence, useInView } from "framer-motion";
 import { useRef } from "react";
-import { CheckCircle2 } from "lucide-react";
-import TechBadge from "@/components/ui/TechBadge";
-import SectionHeading from "@/components/ui/SectionHeading";
-import { fadeUp, staggerFast, scaleIn } from "@/lib/animations";
 
-const techStack = [
+const STACK = [
   {
-    category: "Frontend",
-    techs: ["Next.js", "React", "TypeScript", "Tailwind CSS", "React Native"],
+    id: "frontend",
+    label: "Frontend",
+    color: "blue",
+    techs: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Framer Motion", "React Native"],
+    desc: "Performansi yuksek, SEO uyumlu, animasyonlu arayuzler.",
   },
   {
-    category: "Backend",
+    id: "backend",
+    label: "Backend",
+    color: "violet",
     techs: ["Node.js", "Python", "FastAPI", "PostgreSQL", "MongoDB", "Redis"],
+    desc: "Olceklenebilir API'lar, guvenli veritabani mimarisi.",
   },
   {
-    category: "AI / ML",
+    id: "ai",
+    label: "Yapay Zeka",
+    color: "emerald",
     techs: ["OpenAI API", "LangChain", "Hugging Face", "Pinecone", "Weaviate"],
+    desc: "LLM entegrasyonu, RAG sistemleri, otomasyon pipeline'lari.",
   },
   {
-    category: "Cloud & DevOps",
+    id: "cloud",
+    label: "Cloud & DevOps",
+    color: "sky",
     techs: ["AWS", "GCP", "Docker", "Kubernetes", "GitHub Actions", "Terraform"],
+    desc: "Sifirdan CI/CD, altyapi kurulumu ve guvenlik yapilandirmasi.",
   },
   {
-    category: "Mobil",
+    id: "mobile",
+    label: "Mobil",
+    color: "orange",
     techs: ["React Native", "Expo", "iOS", "Android"],
+    desc: "Tek kod tabani, iki platform. App Store'a kadar.",
   },
   {
-    category: "Araçlar",
-    techs: ["Figma", "Vercel", "Supabase", "Stripe", "Resend"],
+    id: "tools",
+    label: "Araclar",
+    color: "rose",
+    techs: ["Figma", "Vercel", "Supabase", "Stripe", "Resend", "Sentry"],
+    desc: "Uretim ortaminda kanıtlanmis toolchain.",
   },
 ];
 
-const capabilities = [
-  "Kurumsal tanıtım & lead generation siteleri",
-  "SaaS ürünleri (B2B / B2C)",
-  "E-ticaret ve marketplace platformları",
-  "Dahili araçlar ve operasyonel dashboard'lar",
-  "LLM destekli müşteri hizmetleri botları",
-  "ERP / CRM entegrasyonları ve API'lar",
-  "iOS & Android mobil uygulamalar",
-  "Veri görselleştirme ve BI raporlama sistemleri",
-];
+const COLOR_MAP: Record<string, { tab: string; badge: string; dot: string }> = {
+  blue:    { tab: "border-blue-500 text-blue-700 bg-blue-50",    badge: "bg-blue-50 text-blue-700 border-blue-200",    dot: "bg-blue-500" },
+  violet:  { tab: "border-violet-500 text-violet-700 bg-violet-50", badge: "bg-violet-50 text-violet-700 border-violet-200", dot: "bg-violet-500" },
+  emerald: { tab: "border-emerald-500 text-emerald-700 bg-emerald-50", badge: "bg-emerald-50 text-emerald-700 border-emerald-200", dot: "bg-emerald-500" },
+  sky:     { tab: "border-sky-500 text-sky-700 bg-sky-50",       badge: "bg-sky-50 text-sky-700 border-sky-200",       dot: "bg-sky-500" },
+  orange:  { tab: "border-orange-500 text-orange-700 bg-orange-50", badge: "bg-orange-50 text-orange-700 border-orange-200", dot: "bg-orange-500" },
+  rose:    { tab: "border-rose-500 text-rose-700 bg-rose-50",    badge: "bg-rose-50 text-rose-700 border-rose-200",    dot: "bg-rose-500" },
+};
 
 export default function CapabilitiesSection() {
+  const [active, setActive] = useState("frontend");
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
-  const prefersReduced = useReducedMotion();
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+
+  const current = STACK.find((s) => s.id === active)!;
+  const colors = COLOR_MAP[current.color];
 
   return (
-    <section
-      id="yetenekler"
-      aria-labelledby="capabilities-heading"
-      className="section-padding bg-white"
-    >
-      <div className="container-tight">
+    <section id="yetenekler" className="bg-white py-20 lg:py-28">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
         <motion.div
-          initial={prefersReduced ? false : "hidden"}
-          animate={inView ? "visible" : "hidden"}
-          variants={prefersReduced ? {} : fadeUp}
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="mb-12"
         >
-          <SectionHeading
-            id="capabilities-heading"
-            eyebrow="YETENEKLERİMİZ"
-            title="Hangi Teknolojileri Kullanıyoruz?"
-            subtitle="Modern, kanıtlanmış ve ölçeklenebilir teknolojilerle inşa ediyoruz. Trend peşinde değil, doğru araç peşindeyiz."
-          />
+          <p className="text-xs font-bold tracking-[0.2em] uppercase text-blue-700 mb-3">
+            Teknolojiler
+          </p>
+          <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
+            Hangi teknolojiyle insa ediyoruz?
+          </h2>
+          <p className="text-slate-500 mt-3 text-lg max-w-xl">
+            Kategoriye tikla, detaylari gor.
+          </p>
         </motion.div>
 
-        <div
-          ref={ref}
-          className="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-start"
-        >
-          {/* Tech stack */}
+        <div ref={ref} className="space-y-6">
+          {/* Tab buttons */}
           <motion.div
-            initial={prefersReduced ? false : "hidden"}
-            animate={inView ? "visible" : "hidden"}
-            variants={prefersReduced ? {} : fadeUp}
-            className="flex flex-col gap-6"
+            initial={{ opacity: 0, y: 16 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6 }}
+            className="flex flex-wrap gap-2"
           >
-            {techStack.map((group) => (
-              <div key={group.category}>
-                <p className="text-xs font-semibold text-muted uppercase tracking-widest mb-3">
-                  {group.category}
-                </p>
-                <motion.div
-                  variants={prefersReduced ? {} : staggerFast}
-                  className="flex flex-wrap gap-2"
+            {STACK.map((s) => {
+              const isActive = s.id === active;
+              const c = COLOR_MAP[s.color];
+              return (
+                <button
+                  key={s.id}
+                  onClick={() => setActive(s.id)}
+                  className={`px-4 py-2 rounded-xl text-sm font-semibold border transition-all duration-200 ${
+                    isActive
+                      ? `${c.tab} border-current shadow-sm`
+                      : "border-slate-200 text-slate-500 hover:border-slate-300 hover:text-slate-700 bg-white"
+                  }`}
                 >
-                  {group.techs.map((tech) => (
-                    <motion.div key={tech} variants={prefersReduced ? {} : scaleIn}>
-                      <TechBadge name={tech} />
-                    </motion.div>
-                  ))}
-                </motion.div>
-              </div>
-            ))}
-          </motion.div>
-
-          {/* Capabilities list */}
-          <motion.div
-            initial={prefersReduced ? false : "hidden"}
-            animate={inView ? "visible" : "hidden"}
-            variants={prefersReduced ? {} : fadeUp}
-            transition={{ delay: prefersReduced ? 0 : 0.2 }}
-            className="card-base p-8"
-          >
-            <h3 className="font-semibold text-ink text-lg mb-6">
-              Neler İnşa Edebiliriz?
-            </h3>
-            <ul className="flex flex-col gap-3">
-              {capabilities.map((item) => (
-                <li key={item} className="flex items-start gap-3">
-                  <CheckCircle2
-                    size={18}
-                    className="text-primary shrink-0 mt-0.5"
-                  />
-                  <span className="text-sm text-ink leading-relaxed">
-                    {item}
+                  <span className="flex items-center gap-2">
+                    {isActive && <span className={`w-1.5 h-1.5 rounded-full ${c.dot}`} />}
+                    {s.label}
                   </span>
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-8 pt-6 border-t border-card-border">
-              <p className="text-sm text-muted mb-4">
-                İhtiyacınız listede yok mu? Özel projeler için görüşelim.
-              </p>
-              <a href="#iletisim" className="btn-primary text-sm">
-                Projenizi Anlat
-              </a>
-            </div>
+                </button>
+              );
+            })}
           </motion.div>
+
+          {/* Expanded panel */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={active}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
+              className="rounded-2xl border border-slate-200 p-6 sm:p-8 bg-slate-50"
+            >
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
+                <h3 className="font-bold text-slate-900 text-xl">{current.label}</h3>
+                <p className="text-slate-500 text-sm">{current.desc}</p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {current.techs.map((tech, i) => (
+                  <motion.span
+                    key={tech}
+                    initial={{ opacity: 0, scale: 0.85 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: i * 0.04, duration: 0.25 }}
+                    className={`px-3 py-1.5 rounded-lg text-sm font-semibold border ${colors.badge}`}
+                  >
+                    {tech}
+                  </motion.span>
+                ))}
+              </div>
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
     </section>

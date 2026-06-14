@@ -1,179 +1,153 @@
 "use client";
 
 import { useRef, useState } from "react";
-import {
-  motion,
-  useInView,
-  useMotionValue,
-  useSpring,
-  useTransform,
-  useMotionTemplate,
-  useReducedMotion,
-} from "framer-motion";
-import { Globe, Code2, Brain, Smartphone, Cloud, BarChart3 } from "lucide-react";
-import SectionHeading from "@/components/ui/SectionHeading";
-import { stagger, fadeUp } from "@/lib/animations";
+import { motion, useInView, useMotionValue, useSpring, useTransform, useMotionTemplate, useReducedMotion } from "framer-motion";
 import type { LucideIcon } from "lucide-react";
+import { Globe, Code2, Brain, Smartphone, Cloud, BarChart3 } from "lucide-react";
 
-const services = [
+const SERVICES = [
   {
-    icon: Globe,
-    title: "Web Sitesi Geliştirme",
-    description:
-      "Kurumsal tanıtım sitelerinden e-ticaret platformlarına kadar hızlı, SEO uyumlu ve dönüşüm odaklı web siteleri geliştiriyoruz.",
-    iconBg: "bg-blue-50 text-blue-600",
+    Icon: Globe,
+    title: "Web Gelistirme",
+    body: "Kurumsal sitelerden SaaS platformlarina: hizli, SEO uyumlu, donusum odakli.",
+    accent: "#3b82f6",
     shine: "59,130,246",
+    border: "rgba(59,130,246,0.15)",
+    iconBg: "bg-blue-50",
+    iconColor: "text-blue-600",
   },
   {
-    icon: Code2,
-    title: "Yazılım Danışmanlığı",
-    description:
-      "Teknik borç analizi, sistem mimarisi tasarımı ve teknoloji seçimi konularında B2B şirketlerine stratejik danışmanlık sağlıyoruz.",
-    iconBg: "bg-violet-50 text-violet-600",
-    shine: "139,92,246",
+    Icon: Code2,
+    title: "Yazilim Danismanligi",
+    body: "Teknik borc analizi, mimari tasarim, teknoloji secimi. Strateji kadar uygulama da onemli.",
+    accent: "#7c3aed",
+    shine: "124,58,237",
+    border: "rgba(124,58,237,0.15)",
+    iconBg: "bg-violet-50",
+    iconColor: "text-violet-600",
   },
   {
-    icon: Brain,
+    Icon: Brain,
     title: "Yapay Zeka Entegrasyonu",
-    description:
-      "LLM entegrasyonu, otomasyon süreçleri ve AI destekli araçlarla iş süreçlerinizi hızlandırıyor, maliyetleri düşürüyoruz.",
-    iconBg: "bg-emerald-50 text-emerald-600",
-    shine: "16,185,129",
+    body: "LLM, RAG, otomasyon pipeline. Is surecleri yapay zeka ile hizlanir, maliyetler duser.",
+    accent: "#059669",
+    shine: "5,150,105",
+    border: "rgba(5,150,105,0.15)",
+    iconBg: "bg-emerald-50",
+    iconColor: "text-emerald-600",
   },
   {
-    icon: Smartphone,
+    Icon: Smartphone,
     title: "Mobil Uygulama",
-    description:
-      "iOS ve Android için native veya cross-platform uygulamalar geliştirerek müşterilerinizle her an temas halinde olmanızı sağlıyoruz.",
-    iconBg: "bg-orange-50 text-orange-600",
-    shine: "249,115,22",
+    body: "iOS ve Android icin React Native. Tek kod tabani, iki platform, App Store'a kadar.",
+    accent: "#ea580c",
+    shine: "234,88,12",
+    border: "rgba(234,88,12,0.15)",
+    iconBg: "bg-orange-50",
+    iconColor: "text-orange-600",
   },
   {
-    icon: Cloud,
-    title: "DevOps & Bulut Altyapı",
-    description:
-      "AWS, GCP ve Azure üzerinde ölçeklenebilir altyapı kurulumu, CI/CD pipeline entegrasyonu ve güvenlik yapılandırması.",
-    iconBg: "bg-sky-50 text-sky-600",
-    shine: "14,165,233",
+    Icon: Cloud,
+    title: "DevOps & Bulut Altyapi",
+    body: "AWS, GCP, Azure uzerinde CI/CD, Kubernetes, guvenlk yapilandirmasi.",
+    accent: "#0284c7",
+    shine: "2,132,199",
+    border: "rgba(2,132,199,0.15)",
+    iconBg: "bg-sky-50",
+    iconColor: "text-sky-600",
   },
   {
-    icon: BarChart3,
-    title: "Veri Analitiği & Dashboard",
-    description:
-      "Verilerinizi anlamlı içgörülere dönüştüren özel BI dashboard'ları ve raporlama sistemleri geliştiriyoruz.",
-    iconBg: "bg-rose-50 text-rose-600",
-    shine: "244,63,94",
+    Icon: BarChart3,
+    title: "Veri Analitigi & Dashboard",
+    body: "Verilerinizi anlami icerikleristirme: ozel BI dashboard, gercek zamanli raporlama.",
+    accent: "#e11d48",
+    shine: "225,29,72",
+    border: "rgba(225,29,72,0.15)",
+    iconBg: "bg-rose-50",
+    iconColor: "text-rose-600",
   },
 ];
 
-function TiltCard({
-  icon: Icon,
-  title,
-  description,
-  iconBg,
-  shine,
+function ServiceCard({
+  Icon, title, body, accent, shine, border, iconBg, iconColor,
 }: {
-  icon: LucideIcon;
-  title: string;
-  description: string;
-  iconBg: string;
-  shine: string;
+  Icon: LucideIcon; title: string; body: string;
+  accent: string; shine: string; border: string; iconBg: string; iconColor: string;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const prefersReduced = useReducedMotion();
+  const cardRef = useRef<HTMLDivElement>(null);
   const [hovered, setHovered] = useState(false);
+  const prefersReduced = useReducedMotion();
 
-  // 3D tilt
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
-  const rotX = useSpring(useTransform(my, [-0.5, 0.5], [10, -10]), {
-    damping: 20,
-    stiffness: 180,
-  });
-  const rotY = useSpring(useTransform(mx, [-0.5, 0.5], [-10, 10]), {
-    damping: 20,
-    stiffness: 180,
-  });
+  const rotX = useSpring(useTransform(my, [-0.5, 0.5], [8, -8]), { damping: 22, stiffness: 200 });
+  const rotY = useSpring(useTransform(mx, [-0.5, 0.5], [-8, 8]), { damping: 22, stiffness: 200 });
 
-  // Shine highlight that follows mouse
-  const shineX = useMotionValue(50);
-  const shineY = useMotionValue(50);
-  const shineBackground = useMotionTemplate`radial-gradient(circle at ${shineX}% ${shineY}%, rgba(${shine},0.12) 0%, transparent 65%)`;
-  const shineOverlay = useMotionTemplate`radial-gradient(circle at ${shineX}% ${shineY}%, rgba(255,255,255,0.5) 0%, transparent 50%)`;
+  const sx = useMotionValue(50);
+  const sy = useMotionValue(50);
+  const shimmer = useMotionTemplate`radial-gradient(circle at ${sx}% ${sy}%, rgba(${shine},0.1) 0%, transparent 60%)`;
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (prefersReduced || !ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
-    mx.set((e.clientX - rect.left) / rect.width - 0.5);
-    my.set((e.clientY - rect.top) / rect.height - 0.5);
-    shineX.set(((e.clientX - rect.left) / rect.width) * 100);
-    shineY.set(((e.clientY - rect.top) / rect.height) * 100);
+  const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (prefersReduced || !cardRef.current) return;
+    const r = cardRef.current.getBoundingClientRect();
+    mx.set((e.clientX - r.left) / r.width - 0.5);
+    my.set((e.clientY - r.top) / r.height - 0.5);
+    sx.set(((e.clientX - r.left) / r.width) * 100);
+    sy.set(((e.clientY - r.top) / r.height) * 100);
   };
 
-  const handleMouseLeave = () => {
-    mx.set(0);
-    my.set(0);
-    setHovered(false);
-  };
+  const onLeave = () => { mx.set(0); my.set(0); setHovered(false); };
 
   return (
     <motion.div
-      ref={ref}
-      style={
-        prefersReduced
-          ? {}
-          : {
-              rotateX: rotX,
-              rotateY: rotY,
-              transformStyle: "preserve-3d",
-            }
+      ref={cardRef}
+      style={prefersReduced
+        ? { borderColor: hovered ? border : "rgba(226,232,240,1)" }
+        : { rotateX: rotX, rotateY: rotY, transformStyle: "preserve-3d", borderColor: hovered ? border : "rgba(226,232,240,1)" }
       }
-      onMouseMove={handleMouseMove}
+      onMouseMove={onMove}
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={handleMouseLeave}
-      className="group relative rounded-2xl bg-white border border-card-border shadow-card cursor-default overflow-hidden"
+      onMouseLeave={onLeave}
+      className="relative group rounded-2xl bg-white border overflow-hidden cursor-default transition-shadow duration-300 hover:shadow-xl"
     >
-      {/* Tinted glow on hover */}
       <motion.div
-        style={{ background: shineBackground }}
-        className="absolute inset-0 pointer-events-none transition-opacity duration-300"
-        animate={{ opacity: hovered ? 1 : 0 }}
-      />
-
-      {/* Specular shine */}
-      <motion.div
-        style={{ background: shineOverlay }}
+        style={{ background: shimmer }}
         className="absolute inset-0 pointer-events-none"
         animate={{ opacity: hovered ? 1 : 0 }}
-        transition={{ duration: 0.15 }}
+        transition={{ duration: 0.2 }}
       />
 
-      {/* Card content — lifted in Z */}
       <div
         className="relative p-6"
-        style={prefersReduced ? {} : { transform: "translateZ(24px)" }}
+        style={prefersReduced ? {} : { transform: "translateZ(20px)" }}
       >
-        <div
-          className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${iconBg} transition-transform duration-300 group-hover:scale-110`}
-        >
-          <Icon size={22} />
+        {/* Icon */}
+        <div className={`w-11 h-11 ${iconBg} rounded-xl flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110`}>
+          <Icon size={20} className={iconColor} strokeWidth={1.8} />
         </div>
-        <h3 className="font-semibold text-ink text-lg mb-2">{title}</h3>
-        <p className="text-muted text-sm leading-relaxed">{description}</p>
-        <a
+
+        <h3 className="font-bold text-slate-900 text-base mb-2 leading-snug">{title}</h3>
+        <p className="text-slate-500 text-sm leading-relaxed">{body}</p>
+
+        {/* Hover CTA */}
+        <motion.a
           href="#iletisim"
-          className="inline-flex items-center gap-1 text-primary text-sm font-medium mt-4 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300"
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: hovered ? 1 : 0, y: hovered ? 0 : 6 }}
+          transition={{ duration: 0.2 }}
+          className="inline-flex items-center gap-1 mt-4 text-sm font-semibold"
+          style={{ color: accent }}
         >
-          Görüşme ayarla →
-        </a>
+          Gorussme ayarla →
+        </motion.a>
       </div>
 
-      {/* Subtle bottom border highlight */}
+      {/* Bottom accent line */}
       <motion.div
-        className="absolute bottom-0 left-6 right-6 h-px"
-        style={{ background: `rgb(${shine})` }}
-        animate={{ opacity: hovered ? 0.3 : 0 }}
-        transition={{ duration: 0.3 }}
+        className="absolute bottom-0 left-0 right-0 h-0.5 origin-left"
+        style={{ background: accent }}
+        animate={{ scaleX: hovered ? 1 : 0 }}
+        transition={{ duration: 0.35 }}
       />
     </motion.div>
   );
@@ -181,46 +155,43 @@ function TiltCard({
 
 export default function ServicesSection() {
   const ref = useRef(null);
-  const headingRef = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
-  const headingInView = useInView(headingRef, { once: true, margin: "-80px" });
-  const prefersReduced = useReducedMotion();
 
   return (
-    <section
-      id="hizmetler"
-      aria-labelledby="services-heading"
-      className="section-padding bg-white"
-    >
-      <div className="container-tight">
-        <motion.div
-          ref={headingRef}
-          initial={prefersReduced ? false : { opacity: 0, y: 24 }}
-          animate={headingInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <SectionHeading
-            id="services-heading"
-            eyebrow="HİZMETLERİMİZ"
-            title="Şirketinizin İhtiyacına Göre Kapsamlı Çözümler"
-            subtitle="Her proje farklıdır. İhtiyacınızı anlayarak en uygun teknolojiyi ve mimariyi birlikte tasarlıyoruz."
-          />
-        </motion.div>
+    <section id="hizmetler" className="bg-slate-50 py-20 lg:py-28">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="mb-12"
+        >
+          <p className="text-xs font-bold tracking-[0.2em] uppercase text-blue-700 mb-3">
+            Hizmetler
+          </p>
+          <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight max-w-xl">
+            Ihtiyaciniza gore kapsamli cozumler
+          </h2>
+        </motion.div>
+
+        <div
           ref={ref}
-          initial={prefersReduced ? false : "hidden"}
-          animate={inView ? "visible" : "hidden"}
-          variants={prefersReduced ? {} : stagger}
-          className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
           style={{ perspective: "1200px" }}
         >
-          {services.map((service) => (
-            <motion.div key={service.title} variants={prefersReduced ? {} : fadeUp}>
-              <TiltCard {...service} />
+          {SERVICES.map((s, i) => (
+            <motion.div
+              key={s.title}
+              initial={{ opacity: 0, y: 36 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: i * 0.09, duration: 0.7, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
+            >
+              <ServiceCard {...s} />
             </motion.div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

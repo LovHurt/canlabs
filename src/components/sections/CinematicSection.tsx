@@ -13,10 +13,13 @@ interface Particle {
   hue: number;
 }
 
+// Pre-defined particle seed values to avoid Math.random() in render
+// (used only in the canvas useEffect, never in JSX)
+
 function ParticleCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<Particle[]>([]);
-  const mouseRef = useRef({ x: 0, y: 0 });
+  const mouseRef = useRef({ x: -9999, y: -9999 });
   const rafRef = useRef(0);
   const scrollRef = useRef(0);
 
@@ -34,28 +37,41 @@ function ParticleCanvas() {
     resize();
 
     const N = 160;
-    particlesRef.current = Array.from({ length: N }, () => ({
-      x: Math.random() * canvas.offsetWidth,
-      y: Math.random() * canvas.offsetHeight,
-      vx: (Math.random() - 0.5) * 0.5,
-      vy: (Math.random() - 0.5) * 0.5,
-      radius: 1.2 + Math.random() * 1.8,
-      opacity: 0.3 + Math.random() * 0.5,
-      hue: 200 + Math.random() * 60, // blue to violet
-    }));
+    particlesRef.current = Array.from({ length: N }, (_, i) => {
+      // Deterministic-ish seed using index
+      const t = (i * 2654435761) >>> 0;
+      const fx = (t % 10000) / 10000;
+      const fy = ((t >> 8) % 10000) / 10000;
+      const fvx = ((t >> 16) % 1000) / 1000 - 0.5;
+      const fvy = ((t >> 20) % 1000) / 1000 - 0.5;
+      const fr = ((t >> 12) % 1000) / 1000;
+      const fo = ((t >> 4) % 1000) / 1000;
+      const fh = ((t >> 24) % 1000) / 1000;
+      return {
+        x: fx * (canvas.offsetWidth || 1200),
+        y: fy * (canvas.offsetHeight || 800),
+        vx: fvx * 0.5,
+        vy: fvy * 0.5,
+        radius: 1.2 + fr * 1.8,
+        opacity: 0.3 + fo * 0.5,
+        hue: 200 + fh * 60,
+      };
+    });
 
     const onMouse = (e: MouseEvent) => {
       const rect = canvas.getBoundingClientRect();
       mouseRef.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
     };
-    const onScroll = () => { scrollRef.current = window.scrollY; };
+    const onScroll = () => {
+      scrollRef.current = window.scrollY;
+    };
 
     window.addEventListener("mousemove", onMouse, { passive: true });
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", resize);
 
     const CONNECTION_DIST = 130;
-    const MOUSE_RADIUS = 140;
+    const MOUSE_RADIUS = 180;
 
     const draw = () => {
       const W = canvas.offsetWidth;
@@ -69,16 +85,16 @@ function ParticleCanvas() {
 
       const particles = particlesRef.current;
 
-      // Update
+      // Update particles
       for (const p of particles) {
-        // Mouse attraction
+        // Mouse REPULSION: particles flee from the cursor
         const dx = mx - p.x;
         const dy = my - p.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < MOUSE_RADIUS && dist > 0) {
-          const force = (MOUSE_RADIUS - dist) / MOUSE_RADIUS * 0.015;
-          p.vx += dx / dist * force;
-          p.vy += dy / dist * force;
+          const force = ((MOUSE_RADIUS - dist) / MOUSE_RADIUS) * 0.025;
+          p.vx -= (dx / dist) * force;
+          p.vy -= (dy / dist) * force;
         }
 
         // Dampen
@@ -140,12 +156,7 @@ function ParticleCanvas() {
     };
   }, []);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      className="absolute inset-0 w-full h-full"
-    />
-  );
+  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />;
 }
 
 export default function CinematicSection() {
@@ -183,6 +194,7 @@ export default function CinematicSection() {
         style={prefersReduced ? {} : { y: textY, opacity, scale }}
         className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
       >
+        {/* Eyebrow */}
         <motion.p
           initial={prefersReduced ? false : { opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -193,11 +205,16 @@ export default function CinematicSection() {
           Teknoloji, strateji, uygulama
         </motion.p>
 
+        {/* Headline */}
         <motion.h2
           initial={prefersReduced ? false : { opacity: 0, y: 32, filter: "blur(10px)" }}
           whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           viewport={{ once: true }}
-          transition={{ duration: 1, delay: 0.1, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
+          transition={{
+            duration: 1,
+            delay: 0.1,
+            ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
+          }}
           className="text-4xl sm:text-6xl lg:text-7xl font-black text-white leading-[1.05] tracking-tight mb-8"
         >
           Veri akar,{" "}
@@ -208,12 +225,13 @@ export default function CinematicSection() {
                 "linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #38bdf8 100%)",
             }}
           >
-            sistemler konusur,
+            sistemler konuşur,
           </span>
           <br />
-          sonuclar konusur.
+          sonuçlar konuşur.
         </motion.h2>
 
+        {/* Subtext */}
         <motion.p
           initial={prefersReduced ? false : { opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -221,22 +239,26 @@ export default function CinematicSection() {
           transition={{ duration: 0.8, delay: 0.25 }}
           className="text-slate-400 text-xl max-w-2xl mx-auto leading-relaxed mb-12"
         >
-          Karmasik teknoloji sorunlarini sade, olceklenebilir cozumlere donusturuyoruz.
-          Kodu biz yaziyoruz, buyume size kaliyor.
+          Karmaşık teknoloji sorunlarını sade, ölçeklenebilir çözümlere dönüştürüyoruz.
+          Kodu biz yazıyoruz, büyüme size kalıyor.
         </motion.p>
 
+        {/* Single CTA */}
         <motion.div
           initial={prefersReduced ? false : { opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
-          className="flex flex-wrap items-center justify-center gap-4"
+          transition={{
+            duration: 0.6,
+            delay: 0.4,
+            ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
+          }}
         >
           <a
             href="#iletisim"
             className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold px-8 py-4 rounded-2xl transition-all duration-300 shadow-[0_0_50px_rgba(59,130,246,0.3)] hover:shadow-[0_0_70px_rgba(59,130,246,0.5)] text-base"
           >
-            Projenizi konusalim
+            Projenizi konuşalım
             <motion.span
               animate={{ x: [0, 4, 0] }}
               transition={{ duration: 1.6, repeat: Infinity }}
@@ -244,33 +266,6 @@ export default function CinematicSection() {
               →
             </motion.span>
           </a>
-
-          <a
-            href="#hizmetler"
-            className="inline-flex items-center gap-2 border border-white/10 hover:border-white/25 text-white/70 hover:text-white font-medium px-8 py-4 rounded-2xl transition-all duration-300 text-base backdrop-blur-sm"
-          >
-            Ne yapabiliyoruz?
-          </a>
-        </motion.div>
-
-        {/* Floating stats */}
-        <motion.div
-          initial={prefersReduced ? false : { opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.55 }}
-          className="mt-20 grid grid-cols-3 gap-6 max-w-lg mx-auto"
-        >
-          {[
-            { n: "20+", label: "Proje" },
-            { n: "5+", label: "Yil" },
-            { n: "100%", label: "Memnuniyet" },
-          ].map((s) => (
-            <div key={s.label} className="text-center">
-              <div className="text-3xl font-black text-white">{s.n}</div>
-              <div className="text-slate-500 text-xs mt-1 tracking-wide">{s.label}</div>
-            </div>
-          ))}
         </motion.div>
       </motion.div>
     </section>
